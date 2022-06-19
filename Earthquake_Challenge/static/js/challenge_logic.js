@@ -15,6 +15,8 @@ let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/sate
 	accessToken: API_KEY
 });
 
+
+
 /////////////////////// DELIVERABLE 3: Add another layer ///////////////////////
 
 let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}',{
@@ -24,6 +26,8 @@ let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles
 });
 
 /////////////////// END DELIVERABLE 3 ///////////////////////////////////////////
+
+
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
 	center: [40.7, -94.5],
@@ -40,14 +44,14 @@ let baseMaps = {
 
 // 1. Add a 2nd layer group for the tectonic plate data.
 let allEarthquakes = new L.LayerGroup();
-let techtonicPlates = new L.LayerGroup();
+let tectonicPlates = new L.LayerGroup();
 let majorEQ = new L.LayerGroup();
 
 
 // 2 - Add a reference to the tectonic plates group to the overlays object.
 let overlays = {
   "Earthquakes": allEarthquakes,
-  "Techtonic Plates": techtonicPlates,
+  "Tectonic Plates": tectonicPlates,
   "Major Earthquakes": majorEQ
 };
 
@@ -118,12 +122,10 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
     }
   }).addTo(allEarthquakes);
 
-  // Then we add the earthquake layer to our map.
-  allEarthquakes.addTo(map);
-  // Add the major earthquakes layer to the map.
-  allEarthquakes.addTo(map);
-  // Add techtonic plate lines to the map.
-  techtonicPlates.addTo(map);
+  // // Then we add the earthquake layer to our map.
+  // allEarthquakes.addTo(map);
+
+
 
   //////////////////// DELIVERABLE 2 ///////////////////////////////
   // 3 - Retrieve the major earthquake GeoJSON data - majorEQ >= 4.5 mag for the week.
@@ -178,6 +180,9 @@ d3.json(majorearth).then(function(data) {
   
   // 8 - Add major earthquakes layer to the map.
   majorEQ.addTo(map);
+
+    // Add techtonic plate lines to the map.
+    tectonicPlates.addTo(map);
 });
 
 
@@ -213,15 +218,14 @@ legend.onAdd = function() {
   // Finally, we our legend to the map.
   legend.addTo(map);
 
+   // 3 - Use d3.json to make a call to get our Tectonic Plate geoJSON data.
+ let tectonicdata = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
+ d3.json(tectonicdata).then(function(data) {
+   L.geoJson(data,
+     {color: "red",
+     weight: 2
+     }).addTo(tectonicPlates);
+
+ });
 
 
-
- // 3 - Use d3.json to make a call to get our Tectonic Plate geoJSON data.
-  let tectonicdata = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
-  d3.json(techtonicdata).then(function(data) {
-    L.geoJson(data,
-      {color: "#B03A2E",
-      weight: 5
-      }).addTo(techtonicPlates);
-
-  });
